@@ -103,13 +103,14 @@ def visualize(x_list, log_y_list):
     plt.ylabel('x2')
     plt.title('The places of x in the 2D plane')
     plt.scatter(x1, x2, color='b', zorder=1)
-    plt.plot(x1, x2, color='r', zorder=2)
+    plt.plot(x1, x2, color='b', zorder=2)
     plt.show()
     
     plt.xlabel('k')
     plt.ylabel('log(f(xk))')
     plt.title('The change of function values')
-    plt.plot(k, y)
+    plt.scatter(k, y, color='b', zorder=1)
+    plt.plot(k, y, color='b', zorder=2)    
     plt.show()
 
 def main():

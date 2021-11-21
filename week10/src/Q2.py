@@ -41,7 +41,7 @@ def f(A, x):
         ai = A[:, i] #N
         fx -= log(1 - np.matmul(ai.T, x))
     for i in range(N):
-        fx -= log(1 - x[i] * x[i])
+        fx -= log(1 - x[i] ** 2)
     return fx
 
 def df(A, x):
@@ -60,7 +60,7 @@ def df(A, x):
         ai = A[:, i] #N
         dfx = dfx + ai / (1 - np.matmul(ai.T, x))
     for i in range(N):
-        dfx[i] = dfx[i] + (2 * x[i]) / (1 - x[i] * x[i])
+        dfx[i] = dfx[i] + (2 * x[i]) / (1 - x[i] ** 2)
     return dfx
 
 def d2f(A, x):
@@ -77,7 +77,7 @@ def d2f(A, x):
     d2fx = np.zeros((N, N), dtype=np.float)
     for i in range(N):
         ai = A[:, i] #N
-        d2fx = d2fx + np.matmul(ai, ai.T) / ((1 - np.matmul(ai.T, x)) ** 2)
+        d2fx = d2fx + np.matmul(ai.reshape(N, 1), ai.reshape(1, N)) / ((1 - np.matmul(ai.T, x)) ** 2)
     for i in range(N):
         d2fx[i, i] = d2fx[i, i] + 2 * (1 + x[i] ** 2) / ((1 - x[i] ** 2) ** 2)
     return d2fx
@@ -91,7 +91,6 @@ def newton_method(A, x0, epsilon):
         epsilon [float]: [the stopping criterion]
     
     Returns:
-        best_y [float]: [the best y]
         log_dist_list [float array]: [the log distance between predicted y and y*]
         t_list [float array]: [the t values]
     """
@@ -108,8 +107,7 @@ def newton_method(A, x0, epsilon):
         lambda_2 = float(-np.matmul(dfx.T, nt_direction))
         lambda_1 = sqrt(lambda_2)
         t = 1 / (1 + lambda_1)
-        
-        
+      
         if lambda_2 >= epsilon: 
             y_list.append(fx)
             t_list.append(t)
@@ -117,6 +115,7 @@ def newton_method(A, x0, epsilon):
             if extra_steps == 0:
                 y_list.append(fx)
                 t_list.append(t)
+                print(fx)
             extra_steps += 1
             if extra_steps >= 3:
                 best_y = fx
@@ -126,8 +125,7 @@ def newton_method(A, x0, epsilon):
         log_dist = log(abs(y_list[i] - best_y))
         log_dist_list.append(log_dist)
     
-    print(best_y)
-    return best_y, log_dist_list, t_list
+    return log_dist_list, t_list
 
 def visualize(log_dist_list, t_list):
     """Visualize the x1-x2 and k-f(xk) plots
@@ -143,12 +141,14 @@ def visualize(log_dist_list, t_list):
     
     plt.xlabel('k')
     plt.ylabel('log(f(xk)-p*)')
-    plt.plot(k, log_d)
+    plt.scatter(k, log_d, color='b', zorder=1)
+    plt.plot(k, log_d, color='b', zorder=1)
     plt.show()
     
     plt.xlabel('k')
     plt.ylabel('tk')
-    plt.plot(k, t)
+    plt.scatter(k, t, color='b', zorder=1)
+    plt.plot(k, t, color='b', zorder=1)
     plt.show()
     
 def main():
@@ -157,9 +157,9 @@ def main():
     x01 = np.zeros(50, dtype=np.float)
     x02 = np.zeros(100, dtype=np.float)
     epsilon = 1e-5 
-    best_y, log_dist_list, t_list = newton_method(A1, x01, epsilon)
+    log_dist_list, t_list = newton_method(A1, x01, epsilon)
     visualize(log_dist_list, t_list)
-    best_y, log_dist_list, t_list = newton_method(A2, x02, epsilon)
+    log_dist_list, t_list = newton_method(A2, x02, epsilon)
     visualize(log_dist_list, t_list)
         
 if __name__ == "__main__":
