@@ -6,10 +6,10 @@ def f(x):
     """Get f(x)
 
     Args:
-        x [numpy float array], [2]: [x = (x1, x2)]
+        x [numpy double array], [2]: [x = (x1, x2)]
         
     Returns:
-        fx [float]: [f(x)]
+        fx [double]: [f(x)]
     """
     fx = (10 * x[0] * x[0] + x[1] * x[1]) / 2 + 5 * log(1 + exp(-x[0]-x[1]))
     return fx 
@@ -18,12 +18,12 @@ def df(x):
     """Get df(x)
 
     Args:
-        x [numpy float array], [2]: [x = (x1, x2)]
+        x [numpy double array], [2]: [x = (x1, x2)]
         
     Returns:
-        dfx [numpy float array], [2]: [df(x)]
+        dfx [numpy double array], [2]: [df(x)]
     """
-    dfx = np.zeros((2), dtype=np.float)
+    dfx = np.zeros((2), dtype=np.float64)
     right = -5 * exp(-x[0]-x[1]) / (1 + exp(-x[0]-x[1]))
     dfx[0] = 10 * x[0] + right 
     dfx[1] = x[1] + right
@@ -33,12 +33,12 @@ def d2f(x):
     """Get d2f(x)
 
     Args:
-        x [numpy float array], [2]: [x = (x1, x2)]
+        x [numpy double array], [2]: [x = (x1, x2)]
         
     Returns:
-        d2fx [numpy float array], [2 * 2]: [d2f(x)]
+        d2fx [numpy double array], [2 * 2]: [d2f(x)]
     """
-    d2fx = np.zeros((2, 2), dtype=np.float)
+    d2fx = np.zeros((2, 2), dtype=np.float64)
     right = 5 * exp(-x[0]-x[1]) / ((1 + exp(-x[0]-x[1])) ** 2)
     d2fx[0, 0] = 10 + right
     d2fx[0, 1] = right 
@@ -50,19 +50,20 @@ def newton_method(x0, alpha, beta, epsilon):
     """Constant step gradient descent
 
     Args:
-        x0 [numpy float array]: [the starting point]
-        alpha [float]: [the parameter in backtracking]
-        beta [float]: [the parameter in backtracking]
-        epsilon [float]: [the minimal error]
+        x0 [numpy double array]: [the starting point]
+        alpha [double]: [the parameter in backtracking]
+        beta [double]: [the parameter in backtracking]
+        epsilon [double]: [the minimal error]
         
     Returns:
-        x_list [array of numpy float array]: [the trace of x]
-        log_y_list [array of float]: [the trace of log y]
+        x_list [array of numpy double array]: [the trace of x]
+        log_y_list [array of double]: [the trace of log y]
     """
     x_list = []
     log_y_list = []
     x = x0 
     while True:
+        #calculate directions
         fx = f(x)
         x_list.append(x)
         log_y_list.append(log(fx))
@@ -89,8 +90,8 @@ def visualize(x_list, log_y_list):
     """Visualize the x1-x2 and k-f(xk) plots
 
     Args:
-        x_list [array of numpy float array]: [the trace of x]
-        log_y_list [array of float]: [the trace of log y]
+        x_list [array of numpy double array]: [the trace of x]
+        log_y_list [array of double]: [the trace of log y]
     """
     n = len(log_y_list)
     x = np.stack(x_list, axis=0)

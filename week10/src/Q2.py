@@ -11,13 +11,13 @@ def load_data(size):
         size [int]: [50 or 100]
     
     Returns:
-        data [numpy float array], [50 * 50 or 100 * 100]: [the loaded data]
+        data [numpy double array], [50 * 50 or 100 * 100]: [the loaded data]
     """
     current_place = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),\
         'data', 'Q2_data', 'A_' + str(size) + '.csv')
     
-    data = np.zeros((size, size), dtype=np.float)
-    with open(current_place, 'r') as csvfile:
+    data = np.zeros((size, size), dtype=np.float64)
+    with open(current_place, 'r', encoding="utf-8") as csvfile:
         data_reader = csv.reader(csvfile)
         for row in data_reader:
             i = data_reader.line_num - 1 
@@ -25,20 +25,39 @@ def load_data(size):
                 data[i, j] = float(row[j])
     return data 
 
+def save_data(size, x):
+    """Load the data
+
+    Args:
+        size [int]: [50 or 100]
+        x [numpy double array], [50 or 100]: [the best x data]
+    """ 
+    x = x.reshape(size, 1)
+    current_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'result')
+    if not os.path.exists(current_dir):
+        os.mkdir(current_dir)
+    current_dir = os.path.join(current_dir, 'Q2')
+    if not os.path.exists(current_dir):
+        os.mkdir(current_dir)
+    save_place = os.path.join(current_dir, 'A_' + str(size) + '.csv')
+    with open(save_place, 'w', encoding="utf-8", newline="") as csvfile:
+        data_writer = csv.writer(csvfile)
+        data_writer.writerows(x)
+
 def f(A, x):
     """Get f(x)
 
     Args:
-        A [numpy float array], [N * N]: [A]
-        x [numpy float array], [N]: [x]
+        A [numpy double array], [N * N]: [A]
+        x [numpy double array], [N]: [x]
         
     Returns:
-        fx [float]: [f(x)]
+        fx [double]: [f(x)]
     """
     N = x.shape[0]
     fx = 0.0
     for i in range(N):
-        ai = A[:, i] #N
+        ai = A[i] #N
         fx -= log(1 - np.matmul(ai.T, x))
     for i in range(N):
         fx -= log(1 - x[i] ** 2)
@@ -48,16 +67,16 @@ def df(A, x):
     """Get df(x)
 
     Args:
-        A [numpy float array], [N * N]: [A]
-        x [numpy float array], [N]: [x]
+        A [numpy double array], [N * N]: [A]
+        x [numpy double array], [N]: [x]
         
     Returns:
-        dfx [numpy float array], [N]: [df(x)]
+        dfx [numpy double array], [N]: [df(x)]
     """
     N = x.shape[0]
-    dfx = np.zeros((N), dtype=np.float)
+    dfx = np.zeros((N), dtype=np.float64)
     for i in range(N):
-        ai = A[:, i] #N
+        ai = A[i] #N
         dfx = dfx + ai / (1 - np.matmul(ai.T, x))
     for i in range(N):
         dfx[i] = dfx[i] + (2 * x[i]) / (1 - x[i] ** 2)
@@ -67,16 +86,16 @@ def d2f(A, x):
     """Get d2f(x)
 
     Args:
-        A [numpy float array], [N * N]: [A]
-        x [numpy float array], [N]: [x]
+        A [numpy double array], [N * N]: [A]
+        x [numpy double array], [N]: [x]
         
     Returns:
-        d2fx [numpy float array], [N * N]: [d2f(x)]
+        d2fx [numpy double array], [N * N]: [d2f(x)]
     """
     N = x.shape[0]
-    d2fx = np.zeros((N, N), dtype=np.float)
+    d2fx = np.zeros((N, N), dtype=np.float64)
     for i in range(N):
-        ai = A[:, i] #N
+        ai = A[i] #N
         d2fx = d2fx + np.matmul(ai.reshape(N, 1), ai.reshape(1, N)) / ((1 - np.matmul(ai.T, x)) ** 2)
     for i in range(N):
         d2fx[i, i] = d2fx[i, i] + 2 * (1 + x[i] ** 2) / ((1 - x[i] ** 2) ** 2)
@@ -86,13 +105,15 @@ def newton_method(A, x0, epsilon):
     """Use newton method to optimize
 
     Args:
-        A [numpy float array], [N * N]: [A]
-        x0 [numpy float array], [N]: [starting point]
-        epsilon [float]: [the stopping criterion]
+        A [numpy double array], [N * N]: [A]
+        x0 [numpy double array], [N]: [starting point]
+        epsilon [double]: [the stopping criterion]
     
     Returns:
-        log_dist_list [float array]: [the log distance between predicted y and y*]
-        t_list [float array]: [the t values]
+        x_best [numpy double array], [N]: [the best x]
+        y_best [double]: [the best y]
+        log_dist_list [double array]: [the log distance between predicted y and y*]
+        t_list [double array]: [the t values]
     """
     t_list = []
     y_list = []
@@ -100,6 +121,7 @@ def newton_method(A, x0, epsilon):
     x = x0 
     extra_steps = 0
     while True:
+        #calculate directions
         fx = f(A, x)
         dfx = df(A, x)
         d2fx = d2f(A, x)
@@ -108,6 +130,7 @@ def newton_method(A, x0, epsilon):
         lambda_1 = sqrt(lambda_2)
         t = 1 / (1 + lambda_1)
       
+        #newton descent
         if lambda_2 >= epsilon: 
             y_list.append(fx)
             t_list.append(t)
@@ -115,24 +138,25 @@ def newton_method(A, x0, epsilon):
             if extra_steps == 0:
                 y_list.append(fx)
                 t_list.append(t)
-                print(fx)
+                x_best = x
+                y_best = fx
             extra_steps += 1
             if extra_steps >= 3:
-                best_y = fx
+                p_star = fx
                 break             
         x = x + t * nt_direction
     for i in range(len(y_list)):
-        log_dist = log(abs(y_list[i] - best_y))
+        log_dist = log(abs(y_list[i] - p_star))
         log_dist_list.append(log_dist)
     
-    return log_dist_list, t_list
+    return x_best, y_best, log_dist_list, t_list
 
 def visualize(log_dist_list, t_list):
     """Visualize the x1-x2 and k-f(xk) plots
 
     Args:
-        log_dist_list [float array]: [the log distance between predicted y and y*]
-        t_list [float array]: [the t values]
+        log_dist_list [double array]: [the log distance between predicted y and y*]
+        t_list [double array]: [the t values]
     """
     n = len(log_dist_list)
     k = np.arange(0, n)
@@ -154,13 +178,17 @@ def visualize(log_dist_list, t_list):
 def main():
     A1 = load_data(50)
     A2 = load_data(100)
-    x01 = np.zeros(50, dtype=np.float)
-    x02 = np.zeros(100, dtype=np.float)
+    x01 = np.zeros(50, dtype=np.float64)
+    x02 = np.zeros(100, dtype=np.float64)
     epsilon = 1e-5 
-    log_dist_list, t_list = newton_method(A1, x01, epsilon)
+    x_best, y_best, log_dist_list, t_list = newton_method(A1, x01, epsilon)
     visualize(log_dist_list, t_list)
-    log_dist_list, t_list = newton_method(A2, x02, epsilon)
+    save_data(50, x_best)
+    print('y best:', y_best)
+    x_best, y_best, log_dist_list, t_list = newton_method(A2, x02, epsilon)
     visualize(log_dist_list, t_list)
-        
+    save_data(100, x_best)
+    print('y best:', y_best)
+
 if __name__ == "__main__":
     main()
