@@ -1,7 +1,5 @@
-from os import name
 import numpy as np
 import matplotlib.pyplot as plt
-import argparse
 
 def f(A, x):
     return float(np.matmul(np.matmul(x.T, A), x) / 2)
