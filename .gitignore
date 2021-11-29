@@ -9,7 +9,8 @@ __pycache__/
 result/
 visualize/
 src/runs
-
+week11/data
+week11/result
 # Distribution / packaging
 .Python
 build/
