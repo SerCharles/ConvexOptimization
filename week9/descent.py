@@ -64,7 +64,6 @@ def descent_backtrack(A, x0, alpha, beta, delta):
         #calculate t
         t = 1.0
         while True:
-            a = f(A, x - t * gradient)
             dist = f(A, x - t * gradient) - y + alpha * t * float(gradient_norm) * float(gradient_norm)
             if dist <= 0:
                 break 

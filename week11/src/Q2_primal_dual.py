@@ -168,7 +168,7 @@ class PrimalDualMethod(object):
         mu_direction = total_direction[2 * self.n:, :] #m * 1
         return x_direction, lambda_direction, mu_direction
 
-    def get_learning_rate(self, x, lambda_, mu, x_direction, lambda_direction, mu_direction, t, alpha=0.1, beta=0.8):
+    def get_learning_rate(self, x, lambda_, mu, x_direction, lambda_direction, mu_direction, t, alpha=0.4, beta=0.5):
         """Get the learning rate 
 
         Args:
@@ -179,7 +179,7 @@ class PrimalDualMethod(object):
             lambda_direction [numpy double array], [n * 1]: [the lambda descent direction]
             mu_direction [numpy double array], [m * 1]: [the mu descent direction]
             t [double]: [parameter of constraints]
-            alpha (float, optional): [the alpha parameter of newton method]. Defaults to 0.1.
+            alpha (float, optional): [the alpha parameter of newton method]. Defaults to 0.4.
             beta (float, optional): [the beta parameter of newton method]. Defaults to 0.5.
 
         Returns:
