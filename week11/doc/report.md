@@ -109,3 +109,41 @@ w
 初始值选择s^{(0)}=-min(x_i) + 1，牛顿法收敛得到的x_0^*就是原问题求解的初始值x^{(0)}
 $$
 
+
+
+
+
+
+
+原对偶内点法：
+$$
+x，\lambda， \nu的更新方向\Delta x, \Delta \lambda, \Delta \nu的更新方向满足如下方程：\\
+
+\begin{bmatrix}{}
+\Delta x\\
+\Delta \lambda\\
+\Delta \nu
+\end{bmatrix}=
+\begin{bmatrix}{}
+\nabla^2f(x) & -I &A^T\\
+diag(\lambda) & diag(x) & 0\\
+A & 0 & 0
+\end{bmatrix}^{-1}
+\begin{bmatrix}{}
+r_{dual}\\
+r_{cent}\\
+r_{pri}
+\end{bmatrix}\\
+其中
+\begin{bmatrix}{}
+r_{dual}\\
+r_{cent}\\
+r_{pri}
+\end{bmatrix}
+=\begin{bmatrix}{}
+\nabla f(x) - \lambda + A^T\nu\\
+(\lambda_i x_i) - (1/t)1\\
+Ax - b
+\end{bmatrix}\\
+代理对偶间隙\hat{\eta}(x, \lambda) = \sum_{i=1}{n}x_i\lambda_i(其中x_i >0, \lambda_i >=0)
+$$

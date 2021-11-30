@@ -12,7 +12,7 @@ class BarrierMethod(object):
         """
         self.u = 10.0 
         self.stop_criterion = 1e-8
-        self.A, self.b, lambda_0, mu_0, self.P, self.q, x0 = load_data()
+        self.A, self.b, lambda0, mu0, self.P, self.q, x0 = load_data()
         self.m = self.A.shape[0]
         self.n = self.A.shape[1]
 

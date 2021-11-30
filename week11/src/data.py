@@ -8,8 +8,8 @@ def load_data():
     Returns:
         A [numpy double array], [m * n]: [A]
         b [numpy double array], [m * 1]: [b]
-        lambda_0 [numpy double array], [n * 1]: [the initial lambda]
-        mu_0 [numpy double array], [m * 1]: [the initial mu]
+        lambda0 [numpy double array], [n * 1]: [the initial lambda]
+        mu0 [numpy double array], [m * 1]: [the initial mu]
         P [numpy double array], [n * n]: [P]
         q [numpy double array], [n * 1]: [q]
         x_0 [numpy double array], [n * 1]: [the initial x]
@@ -17,12 +17,12 @@ def load_data():
     data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
     A = loadmat(os.path.join(data_dir, 'A.mat'))['A']
     b = loadmat(os.path.join(data_dir, 'b.mat'))['b']
-    lambda_0 = loadmat(os.path.join(data_dir, 'lambda.mat'))['lambda']
-    mu_0 = loadmat(os.path.join(data_dir, 'mu.mat'))['mu']
+    lambda0 = loadmat(os.path.join(data_dir, 'lambda.mat'))['lambda']
+    mu0 = loadmat(os.path.join(data_dir, 'mu.mat'))['mu']
     P = loadmat(os.path.join(data_dir, 'P.mat'))['P']
     q = loadmat(os.path.join(data_dir, 'q.mat'))['q']
     x0 = loadmat(os.path.join(data_dir, 'x_0.mat'))['x_0']
-    return A, b, lambda_0, mu_0, P, q, x0
+    return A, b, lambda0, mu0, P, q, x0
 
 def save_data(method, x, lambda_, mu, y):
     """Save the results
