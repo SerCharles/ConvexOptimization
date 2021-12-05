@@ -6,6 +6,7 @@ __pycache__/
 # C extensions
 *.so
 *.wav
+data/
 result/
 visualize/
 src/runs
