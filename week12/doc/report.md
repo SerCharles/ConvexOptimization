@@ -4,6 +4,8 @@ typora-root-url: ./
 
 1.
 
+![Q11](E:\Programming\ConvexOptimization\week12\doc\Q11.jpg)
+
 ![Q1](/Q1.jpg)
 
 2.(1)
@@ -29,7 +31,7 @@ $$
 min_{x}\frac{1}{2}||Ax-b||_2^2 + ||x||_1的次梯度g(x)为\\
 A^TAx - A^Tb+sign(x),其中sign(x)_i=\left\{\begin{aligned}{}1 \quad x_i>0\\
 0 \quad x_i=0\\-1\quad x_i<0\end{aligned}\right.\\
-
+
 $$
 具体推导如下：
 
