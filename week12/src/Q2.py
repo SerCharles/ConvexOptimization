@@ -88,8 +88,8 @@ class Solver(object):
         Returns:
             new_x [numpy double array], [N * 1]: [new x]
         """
-        new_front = np.linalg.inv(np.matmul(self.A.T, self.A) * self.alpha + np.identity(self.n, dtype=np.float64))
-        new_end = np.matmul(self.A.T, self.b) * self.alpha + x 
+        new_front = np.linalg.inv(np.matmul(self.A.T, self.A) + np.identity(self.n, dtype=np.float64) / self.alpha)
+        new_end = np.matmul(self.A.T, self.b) + x / self.alpha
         new_x = np.matmul(new_front, new_end)
         return new_x
     
@@ -97,8 +97,8 @@ class Solver(object):
         """The proximal iteration algorithm
         
         Returns:
-            x_list [array of numpy float array]: [the list of x]
-            fx_list [array of numpy float array]: [the list of fx]
+            x_list [array of numpy double array]: [the list of x]
+            fx_list [array of numpy double array]: [the list of fx]
         """ 
         x0 = np.zeros((self.n, 1), dtype=np.float64)
         x = x0 
@@ -122,8 +122,8 @@ class Solver(object):
         """Visualize the result
 
         Args:
-            x_list [array of numpy float array]: [the list of x]
-            fx_list [array of numpy float array]: [the list of fx]
+            x_list [array of numpy double array]: [the list of x]
+            fx_list [array of numpy double array]: [the list of fx]
         """
         best_x = x_list[-1] #N * 1
         k = len(x_list) - 1
