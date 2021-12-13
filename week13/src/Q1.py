@@ -71,7 +71,7 @@ class Solver(object):
         current_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'result')
         if not os.path.exists(current_dir):
             os.mkdir(current_dir)
-        current_dir = os.path.join(current_dir, 'Q2')
+        current_dir = os.path.join(current_dir, 'Q1')
         if not os.path.exists(current_dir):
             os.mkdir(current_dir)
     
