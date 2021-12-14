@@ -86,9 +86,6 @@ class Solver(object):
         sigma_diagonal = np.diag(sigma)
         M_diagonal = np.identity(self.n) * (self.M + 1)
         self.P = np.matmul(np.sqrt(M_diagonal - sigma_diagonal), v)
-        print(self.M)
-        print(np.linalg.norm(np.matmul(self.P.T, self.P) + np.matmul(self.A.T, self.A) - np.identity(self.n) * (self.M + 1), ord=2))
-
         
     
     def solver_1(self):
@@ -174,7 +171,7 @@ class Solver(object):
         y0 = np.matmul(self.P, self.x0)
         u0 = np.zeros((self.m, 1), dtype=np.float64)
         v0 = np.zeros((self.n, 1), dtype=np.float64)
-        alpha = 0.1 / self.M
+        alpha = 10000 / (self.M + 1)
         addition_steps = 0
         x_list = [] 
         x = x0
@@ -188,9 +185,9 @@ class Solver(object):
             last_u = u 
             last_v = v 
             s = np.matmul(self.A.T, self.b) * alpha + np.matmul(self.P.T, last_y) * alpha + np.matmul(self.P.T, last_v) - np.matmul(self.A.T, last_u)
-            x = (s - 1 / alpha / (self.M + 1)) * (s > 1) + (s + 1 / alpha / (self.M + 1)) * (s < -1)
-            y = np.matmul(self.P, last_x) - last_v / alpha
-            u = last_u + (np.matmul(self.A, x)) * alpha
+            x = (s - 1) / (alpha * (self.M + 1)) * (s > 1) + (s + 1) / (alpha * (self.M + 1)) * (s < -1)
+            y = np.matmul(self.P, x) - last_v / alpha
+            u = last_u + (np.matmul(self.A, x) - self.b) * alpha
             v = last_v + (y - np.matmul(self.P, x)) * alpha
             x_list.append(x)
             dist = np.linalg.norm(last_x, ord=1) - np.linalg.norm(x, ord=1)
@@ -230,24 +227,24 @@ class Solver(object):
     def run(self):
         """The main function
         """
-        '''
+        
         x_list = self.solver_1()
         best_x = x_list[-1]
-        print(np.linalg.norm(np.matmul(self.A, best_x) - self.b, ord=2))
+        print('normal =', np.linalg.norm(np.matmul(self.A, best_x) - self.b, ord=2))
         best_y = np.linalg.norm(best_x, ord=1)
         self.save_data(1, best_x, best_y)
         self.visualize(x_list)
         
         x_list = self.solver_2()
         best_x = x_list[-1]
-        print(np.linalg.norm(np.matmul(self.A, best_x) - self.b, ord=2))
+        print('normal =', np.linalg.norm(np.matmul(self.A, best_x) - self.b, ord=2))
         best_y = np.linalg.norm(best_x, ord=1)
         self.save_data(2, best_x, best_y)
         self.visualize(x_list)
-        '''
+        
         x_list = self.solver_3()
         best_x = x_list[-1]
-        print(np.linalg.norm(np.matmul(self.A, best_x) - self.b, ord=2))
+        print('normal =', np.linalg.norm(np.matmul(self.A, best_x) - self.b, ord=2))
         best_y = np.linalg.norm(best_x, ord=1)
         self.save_data(3, best_x, best_y)
         self.visualize(x_list)
